@@ -1,5 +1,2 @@
 # gladiator
-hello world
-|          ||          |
-||          |
-||          |          ||
+[hello world]
