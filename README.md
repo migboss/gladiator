@@ -1,2 +1,2 @@
 # gladiator
-[hello world]
+ok
