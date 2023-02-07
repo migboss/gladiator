@@ -14,3 +14,14 @@ const express = require('express');
             });
           
           module.exports = router;
+        
+          router.get('/:id', async function(req, res, next) {
+            try { 
+                console.log("Get card with id "+req.params.id);
+                let result = await Card.getById(req.params.id);
+                res.status(result.status).send(result.result);
+            } catch(err) {
+                console.log(err);
+                res.status(500).send(err);
+            }
+          });
