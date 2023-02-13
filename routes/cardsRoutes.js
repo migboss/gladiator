@@ -11,7 +11,7 @@ const express = require('express');
                   console.log(err);
                   res.status(500).send(err);
               }
-            }
+            })
             
             router.get('/:id', async function(req, res, next) {
                 try { 
