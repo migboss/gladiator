@@ -1,12 +1,5 @@
 const pool = require("../config/database");
 
-const cardValidations = [ body('name').isLength({ min: 4, max: 60 })
-              .withMessage('Name must have between 4 and 60 characters'),
-              body('level').isInt({ min: 0 })
-              .withMessage('Level must be a non negative integer number'),
-              body('type').isInt({ min: 1 })
-              .withMessage('Type must be a positive integer number')];
-
 function cardFromDB(dbObj) {
     return new Card(dbObj.crd_id, dbObj.crd_name,
         dbObj.crd_img_url, dbObj.crd_lore, dbObj.crd_description,
@@ -101,8 +94,8 @@ class Card {
             let result = [];
             let [dbCards] =
                 await pool.query(`Select * from cards 
-                where crd_description LIKE ? or crd_lore LIKE ?`, 
-                ['%'+text+'%','%'+text+'%']);
+                where crd_description LIKE ? or crd_lore LIKE ?`,
+                    ['%' + text + '%', '%' + text + '%']);
             for (let dbCard of dbCards) {
                 result.push(cardFromDB(dbCard));
             }
@@ -147,11 +140,27 @@ class Card {
                 crd_max_usage=?, crd_type=? where crd_id=?`, [newInfo.name, newInfo.url, newInfo.lore,
                 newInfo.description, newInfo.level, newInfo.cost, newInfo.timeout,
                 newInfo.maxUsage, newInfo.type, newInfo.id]);
-            return { status: 200, result:{msg:"Card edited" }}
+            return { status: 200, result: { msg: "Card edited" } }
         } catch (err) {
             console.log(err);
             return { status: 500, result: err };
         }
+
+    }
+
+    static async deleteById(id) {
+        try {
+            let [result] =
+                await pool.query("delete from cards where crd_id=?", [id]);
+            // if nothing was deleted it means no card exists with that id
+            if (!result.affectedRows)
+                return { status: 404, result: { msg: "No card found with that identifier" } };
+            return { status: 200, result: { msg: "Card deleted!" } };
+        } catch (err) {
+            console.log(err);
+            return { status: 500, result: err };
+        }
+    }
 
 }
 
